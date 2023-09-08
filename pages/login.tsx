@@ -7,7 +7,7 @@ const LoginPage = () => {
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
       <div className="flex items-center h-full w-full">
         <div className="bg-white w-full md:w-1/2 h-full mx-auto flex flex-col justify-center items-center min-h-screen px-4 md:px-6 lg:px-8 py-8">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 items-center">
             <div className="aspect-square">
               <Image
                 src="/assets/icons/main-logo.png"
@@ -18,7 +18,7 @@ const LoginPage = () => {
             </div>
             <h1 className="text-2xl font-bold">SIM-PPOB</h1>
           </div>
-          <div className="max-w-xl md:max-w-sm text-3xl font-bold text-center py-8">
+          <div className="max-w-xl md:max-w-sm text-3xl font-medium text-gray-800 text-center py-8">
             Masuk atau buat akun untuk memulai
           </div>
           <div className="w-full lg:w-2/3 mx-auto">
@@ -28,6 +28,7 @@ const LoginPage = () => {
                   type="email"
                   name="email"
                   id="email"
+                  placeholder="masukkan email anda"
                   className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 />
               </div>
@@ -36,6 +37,7 @@ const LoginPage = () => {
                   type="password"
                   name="password"
                   id="password"
+                  placeholder="masukkan password anda"
                   className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 />
               </div>
