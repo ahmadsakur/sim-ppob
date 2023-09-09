@@ -38,7 +38,7 @@ const Navbar = () => {
   return (
     <div className="py-4 border-b">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <Link href={'/'} className="flex items-center gap-2">
           <div className="aspect-square">
             <Image
               src="/assets/icons/main-logo.png"
@@ -48,7 +48,7 @@ const Navbar = () => {
             />
           </div>
           <p className="text-sm font-semibold">SIM PPOB</p>
-        </div>
+        </Link>
         <div className="items-center gap-12 hidden md:flex">
           {navLinks.map((link) => (
             <Link href={link.href} key={link.title}>

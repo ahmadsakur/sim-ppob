@@ -94,7 +94,7 @@ export default Dashboard;
 
 export async function getServerSideProps() {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vaXJjb2RlQGdtYWlsLmNvbSIsIm1lbWJlckNvZGUiOiJMTUFXR0M2NiIsImlhdCI6MTY5NDIwNTY2MCwiZXhwIjoxNjk0MjQ4ODYwfQ.2vsObDEsoaHD6RKvK6qpvyy8gTfVwUW0WYykmZznwkY";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vaXJjb2RlQGdtYWlsLmNvbSIsIm1lbWJlckNvZGUiOiJMTUFXR0M2NiIsImlhdCI6MTY5NDI1NTI0MiwiZXhwIjoxNjk0Mjk4NDQyfQ.RpMEKMuQl_wtf-t6HxX-nTAHrCiHrYCnrZvxP6BGHqw";
 
   try {
     const { data: services } = await ContentService.getServices({ token });
