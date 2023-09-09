@@ -9,3 +9,9 @@ export type registerCredentialsType = {
   last_name: string;
   password: string;
 };
+
+export type updateProfileType = {
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+};

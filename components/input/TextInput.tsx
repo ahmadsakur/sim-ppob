@@ -17,7 +17,7 @@ const TextInput: React.FC<TextInputProps> = ({ label, ...props }) => {
   return (
     <div className="flex flex-col gap-2 w-full relative">
       {label && (
-        <label htmlFor={props.id} className="text-gray-600">
+        <label htmlFor={props.id} className="text-gray-600 text-sm font-medium">
           {label}
         </label>
       )}
