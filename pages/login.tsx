@@ -1,34 +1,34 @@
 import { AuthService } from "@/services/api-service";
-import { data } from "autoprefixer";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import TextInput from "@/components/input/TextInput";
+import { Formik, Form } from "formik";
+import { BiAt, BiLock } from "react-icons/bi";
+import PasswordInput from "@/components/input/PasswordInput";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Define validation schema using Yup (you can import Yup from 'yup')
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
 
-  const handleLogin = () => {
-    AuthService.login({
-      email: email,
-      password: password,
-    })
-      .then((res: any) => {
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.error(error.response.data);
-      });
-  };
-
-  const handleFormChange = (e: any) => {
-    const { name, value } = e.target;
-    if (name === "email") {
-      setEmail(value);
-    } else if (name === "password") {
-      setPassword(value);
-    }
-  };
+  // Initialize Formik
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   return (
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
@@ -49,41 +49,45 @@ const LoginPage = () => {
             Masuk atau buat akun untuk memulai
           </div>
           <div className="w-full lg:w-2/3 mx-auto">
-            <form className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <input
-                  type="email"
-                  name="email"
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={validationSchema}
+              onSubmit={(values: any) => {
+                // Handle form submission here
+                console.log(values);
+              }}
+            >
+              <Form className="flex flex-col gap-8">
+                <TextInput
                   id="email"
+                  name="email"
+                  type="email"
                   placeholder="masukkan email anda"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  icon={<BiAt />}
                 />
-              </div>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="password"
-                  name="password"
+                <PasswordInput
                   id="password"
+                  name="password"
                   placeholder="masukkan password anda"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  icon={<BiLock />}
                 />
-              </div>
-              <div className="flex flex-col gap-2 pt-8">
-                <button
-                  type="submit"
-                  className="bg-[#ff4d00] text-white rounded-md py-2"
-                >
-                  Masuk
-                </button>
-              </div>
-            </form>
+                <div className="flex flex-col gap-2 mt-4">
+                  <button
+                    type="submit"
+                    className="bg-[#ff4d00] text-white rounded-md py-2"
+                  >
+                    Masuk
+                  </button>
+                </div>
+              </Form>
+            </Formik>
+
             <p className="text-gray-500 text-sm py-4 text-center mx-auto">
               belum punya akun ? daftar{" "}
               <Link href={"/register"} className="text-[#ff4d00] font-medium">
                 di sini.
               </Link>
             </p>
-            <button onClick={handleLogin}>Click me</button>
           </div>
         </div>
         <div
