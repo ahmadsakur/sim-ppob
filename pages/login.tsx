@@ -2,33 +2,39 @@ import { AuthService } from "@/services/api-service";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useFormik } from "formik";
 import * as Yup from "yup";
-import TextInput from "@/components/input/TextInput";
 import { Formik, Form } from "formik";
 import { BiAt, BiLock } from "react-icons/bi";
+import TextInput from "@/components/input/TextInput";
 import PasswordInput from "@/components/input/PasswordInput";
 
 const LoginPage = () => {
-  // Define validation schema using Yup (you can import Yup from 'yup')
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    password: Yup.string().required("Password is required").min(8),
   });
 
-  // Initialize Formik
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
+  const handleLogin = async (
+    values: { email: string; password: string },
+    { setErrors, setSubmitting }: any
+  ) => {
+    try {
+      setSubmitting(true);
+      const response = await AuthService.login(values);
+      console.log(response);
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage = error.response.data.message;
+        setErrors({ password: errorMessage });
+      } else {
+        console.error(error);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
@@ -52,34 +58,38 @@ const LoginPage = () => {
             <Formik
               initialValues={{ email: "", password: "" }}
               validationSchema={validationSchema}
-              onSubmit={(values: any) => {
-                // Handle form submission here
-                console.log(values);
+              onSubmit={(values, { setSubmitting, setErrors }) => {
+                handleLogin(values, { setSubmitting, setErrors });
               }}
             >
-              <Form className="flex flex-col gap-8">
-                <TextInput
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="masukkan email anda"
-                  icon={<BiAt />}
-                />
-                <PasswordInput
-                  id="password"
-                  name="password"
-                  placeholder="masukkan password anda"
-                  icon={<BiLock />}
-                />
-                <div className="flex flex-col gap-2 mt-4">
-                  <button
-                    type="submit"
-                    className="bg-[#ff4d00] text-white rounded-md py-2"
-                  >
-                    Masuk
-                  </button>
-                </div>
-              </Form>
+              {({ isSubmitting }) => (
+                <Form className="flex flex-col gap-8">
+                  <TextInput
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="masukkan email anda"
+                    icon={<BiAt />}
+                  />
+                  <PasswordInput
+                    id="password"
+                    name="password"
+                    placeholder="masukkan password anda"
+                    icon={<BiLock />}
+                  />
+                  <div className="flex flex-col gap-2 mt-4">
+                    <button
+                      type="submit"
+                      className={`bg-[#ff4d00] text-white rounded-md py-2 ${
+                        isSubmitting ? "cursor-wait opacity-50" : ""
+                      }`}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Loading..." : "Masuk"}
+                    </button>
+                  </div>
+                </Form>
+              )}
             </Formik>
 
             <p className="text-gray-500 text-sm py-4 text-center mx-auto">

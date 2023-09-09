@@ -29,11 +29,11 @@ const TextInput: React.FC<TextInputProps> = ({ label, ...props }) => {
           {...field}
           {...props}
           className={`border-2 rounded-sm px-4 py-2 focus:outline-none pl-10 w-full placeholder:text-gray-500 placeholder:text-sm ${
-            hasError ? "border-red-500" : "border-gray-300"
+            hasError ? "border-red-500" : "border-gray-200"
           }`}
         />
       </div>
-      {meta.error && meta.touched && (
+      {hasError && (
         <div className="text-red-500 text-sm font-medium">{meta.error}</div>
       )}
     </div>

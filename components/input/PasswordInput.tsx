@@ -45,8 +45,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ label, ...props }) => {
           {showPassword ? <BiHide /> : <BiShow />}
         </div>
       </div>
-      {meta.error && meta.touched && (
-        <div className="text-red-500">{meta.error}</div>
+      {hasError && (
+        <div className="text-red-500 text-sm font-medium">{meta.error}</div>
       )}
     </div>
   );
