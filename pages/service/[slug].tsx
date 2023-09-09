@@ -1,15 +1,22 @@
+import TopupModal from "@/components/TopupModal";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { ContentService } from "@/services/api-service";
+import { ContentService, TransactionService } from "@/services/api-service";
 import { ServiceType } from "@/types/api/content";
 import { formatCurrency } from "@/utils/string";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const ServicePaymentPage = ({ service }: { service: ServiceType }) => {
-  const [isBalanceVisible, setIsBalanceVisible] =
-    React.useState<boolean>(false);
+  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const balanceData = 1000000;
-  console.log(service);
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+ 
   return (
     <DashboardLayout>
       <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
@@ -74,16 +81,17 @@ const ServicePaymentPage = ({ service }: { service: ServiceType }) => {
         />
         <button
           type="submit"
-          className="bg-[#ff4d00] text-white rounded-sm py-3 w-full text-sm font-bold"
+          onClick={() => setIsModalVisible(true)}
+          className="bg-[#ff4d00] text-white rounded-sm py-3 w-full text-sm font-bold disabled:bg-orange-500"
+          disabled={isLoading}
         >
-          Bayar
+          {isLoading ? "Loading..." : "Bayar"}
         </button>
       </div>
+      {isModalVisible && <TopupModal isOpen={isModalVisible} onClose={handleCloseModal} data={service} />}
     </DashboardLayout>
   );
 };
-
-export default ServicePaymentPage;
 
 export async function getServerSideProps({
   params,
@@ -106,3 +114,5 @@ export async function getServerSideProps({
     },
   };
 }
+
+export default ServicePaymentPage;

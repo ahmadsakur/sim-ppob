@@ -6,7 +6,6 @@ import { Formik, Form } from "formik";
 import { BiAt, BiLock, BiUser } from "react-icons/bi";
 import * as Yup from "yup";
 import TextInput from "@/components/input/TextInput";
-import PasswordInput from "@/components/input/PasswordInput";
 import { AuthService } from "@/services/api-service";
 
 const AccountPage = () => {
