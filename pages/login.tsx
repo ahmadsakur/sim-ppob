@@ -1,8 +1,35 @@
+import { AuthService } from "@/services/api-service";
+import { data } from "autoprefixer";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    AuthService.login({
+      email: email,
+      password: password,
+    })
+      .then((res: any) => {
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.error(error.response.data);
+      });
+  };
+
+  const handleFormChange = (e: any) => {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
       <div className="flex items-center h-full w-full">
@@ -56,6 +83,7 @@ const LoginPage = () => {
                 di sini.
               </Link>
             </p>
+            <button onClick={handleLogin}>Click me</button>
           </div>
         </div>
         <div
