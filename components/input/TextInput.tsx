@@ -8,6 +8,9 @@ interface TextInputProps {
   type: string;
   icon: React.ReactElement;
   label?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string | number;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
 const TextInput: React.FC<TextInputProps> = ({ label, ...props }) => {

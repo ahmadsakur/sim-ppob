@@ -1,4 +1,4 @@
-import TopupModal from "@/components/TopupModal";
+import ServiceModal from "@/components/ServiceModal";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { ContentService, TransactionService } from "@/services/api-service";
 import { ServiceType } from "@/types/api/content";
@@ -88,7 +88,7 @@ const ServicePaymentPage = ({ service }: { service: ServiceType }) => {
           {isLoading ? "Loading..." : "Bayar"}
         </button>
       </div>
-      {isModalVisible && <TopupModal isOpen={isModalVisible} onClose={handleCloseModal} data={service} />}
+      {isModalVisible && <ServiceModal isOpen={isModalVisible} onClose={handleCloseModal} data={service} />}
     </DashboardLayout>
   );
 };

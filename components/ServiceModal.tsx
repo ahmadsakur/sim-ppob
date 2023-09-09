@@ -5,12 +5,13 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { BiCheck, BiX } from "react-icons/bi";
 
-interface TopupModalProps {
+interface ServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  amount: number;
+  data: ServiceType;
 }
-const TopupModal = ({ isOpen, onClose, amount }: TopupModalProps) => {
+
+const ServiceModal = ({ isOpen, onClose, data }: ServiceModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("initial" || "final");
   const [isError, setIsError] = useState<boolean>(true);
@@ -71,9 +72,9 @@ const TopupModal = ({ isOpen, onClose, amount }: TopupModalProps) => {
               height={50}
               alt="sim ppob logo"
             />
-            <p className="text-sm mt-4">Top Up sebesar</p>
+            <p className="text-sm mt-4">Beli {data.service_name} senilai</p>
             <p className="text-left font-bold text-lg">
-              {`Rp. ${formatCurrency(amount)}`}
+              {`Rp. ${formatCurrency(data.service_tariff)}`}
             </p>
             <button
               onClick={handleTopupPayment}
@@ -101,9 +102,11 @@ const TopupModal = ({ isOpen, onClose, amount }: TopupModalProps) => {
                 <BiCheck className="text-white w-12 h-12" />
               )}
             </div>
-            <p className="text-sm mt-4">Top Up sebesar </p>
+            <p className="text-sm mt-4">
+              Pembayaran {data.service_name} senilai
+            </p>
             <p className="text-left font-bold text-lg">
-              {`Rp. ${formatCurrency(amount)}`}
+              {`Rp. ${formatCurrency(data.service_tariff)}`}
             </p>
             <p className="text-sm mt-4">{isError ? "gagal" : "berhasil"}</p>
             <button
@@ -119,4 +122,4 @@ const TopupModal = ({ isOpen, onClose, amount }: TopupModalProps) => {
   );
 };
 
-export default TopupModal;
+export default ServiceModal;
