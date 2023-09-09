@@ -3,11 +3,20 @@ import Image from "next/image";
 import React from "react";
 import { formatCurrency } from "@/utils/string";
 import TransactionCard from "@/components/TransactionCard";
+import { TransactionType } from "@/types/api/transaction";
 
 const TransactionPage = () => {
   const [isBalanceVisible, setIsBalanceVisible] =
     React.useState<boolean>(false);
   const balanceData = 1000000;
+
+  const sampleTransaction : TransactionType = {
+    invoice_number: "1694196045044",
+    transaction_type: "TOPUP",
+    description: "Pulsa",
+    total_amount: 40000,
+    created_on: "2023-09-08T18:00:45.044Z",
+  };
   return (
     <DashboardLayout>
       <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
@@ -47,12 +56,14 @@ const TransactionPage = () => {
       <div className="py-4">
         <p className="mt-4 text-lg font-bold">Semua Transaksi</p>
         <div className="flex flex-col gap-4 w-full py-4">
-          <TransactionCard />
-          <TransactionCard />
-          <TransactionCard />
-          <TransactionCard />
+          <TransactionCard data={sampleTransaction} />
+          <TransactionCard data={sampleTransaction} />
+          <TransactionCard data={sampleTransaction} />
+          <TransactionCard data={sampleTransaction} />
         </div>
-        <p className="text-center text-[#ff4d00] font-bold cursor-pointer">Show More</p>
+        <p className="text-center text-[#ff4d00] font-bold cursor-pointer">
+          Show More
+        </p>
       </div>
     </DashboardLayout>
   );
