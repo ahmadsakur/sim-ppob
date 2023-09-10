@@ -23,13 +23,7 @@ export const AuthService = {
       },
     });
   },
-  updateProfile: ({
-    data,
-    token,
-  }: {
-    data: updateProfileType;
-    token: string;
-  }) => {
+  updateProfile: (data:updateProfileType, token:string) => {
     return apiClient.put("/profile/update", data, {
       headers: {
         Authorization: `Bearer ${token}`,

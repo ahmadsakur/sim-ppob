@@ -10,6 +10,7 @@ interface TextInputProps {
   label?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string | number;
+  defaultValue?: string | number;
   ref?: React.Ref<HTMLInputElement>;
 }
 
