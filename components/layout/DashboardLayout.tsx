@@ -7,6 +7,7 @@ import jwtDecode from "jwt-decode";
 import { logout } from "@/store/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -33,6 +34,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
+    <>
+    <Head>
+      <title>SIM PPOB - Ahmad Sakur</title>
+    </Head>
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 min-h-screen pb-24">
       <Navbar />
       <main className="pb-24 h-full">
@@ -51,7 +56,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         )}
       </main>
-    </div>
+    </div></>
   );
 };
 

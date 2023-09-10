@@ -10,6 +10,7 @@ import PasswordInput from "@/components/input/PasswordInput";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { setToken } from "@/store/auth/authSlice";
+import Head from "next/head";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -39,6 +40,10 @@ const LoginPage = () => {
   };
 
   return (
+    <>
+    <Head>
+      <title>SIM PPOB - Ahmad Sakur</title>
+    </Head>
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
       <div className="flex items-center h-full w-full">
         <div className="bg-white w-full md:w-1/2 h-full mx-auto flex flex-col justify-center items-center min-h-screen px-4 md:px-6 lg:px-8 py-8">
@@ -110,6 +115,7 @@ const LoginPage = () => {
         ></div>
       </div>
     </div>
+    </>
   );
 };
 
