@@ -89,4 +89,16 @@ export const TransactionService = {
       }
     );
   },
+
+  getTransaction: ({ token, offset }: { token: string; offset: number }) => {
+    return apiClient.get("/transaction/history", {
+      params: {
+        offset,
+        limit: 5,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };
