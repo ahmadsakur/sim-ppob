@@ -7,16 +7,19 @@ import { BiAt, BiLock, BiUser } from "react-icons/bi";
 import TextInput from "@/components/input/TextInput";
 import PasswordInput from "@/components/input/PasswordInput";
 import { AuthService } from "@/services/api-service";
+import { useRouter } from "next/router";
 
 const RegisterPage = () => {
+  const router = useRouter();
+  const [isSuccess, setIsSuccess] = React.useState(false);
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    firstName: Yup.string().required("Name is required"),
-    lastName: Yup.string().required("Name is required"),
+    first_name: Yup.string().required("Name is required"),
+    last_name: Yup.string().required("Name is required"),
     password: Yup.string().required("Password is required").min(8),
-    passwordConfirmation: Yup.string()
+    password_confirmation: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords must match")
       .required("Password confirmation is required"),
   });
@@ -28,11 +31,14 @@ const RegisterPage = () => {
     try {
       setSubmitting(true);
       const response = await AuthService.register(values);
-      console.log(response);
+      setIsSuccess(true);
+      setTimeout(() => {
+        router.push("/login")
+      }, 1500);
     } catch (error: any) {
       if (error.response) {
         const errorMessage = error.response.data.message;
-        setErrors({ passwordConfirmation: errorMessage });
+        setErrors({ password_confirmation: errorMessage });
       } else {
         console.error(error);
       }
@@ -45,6 +51,15 @@ const RegisterPage = () => {
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
       <div className="flex items-center h-full w-full">
         <div className="bg-white w-full md:w-1/2 h-full mx-auto flex flex-col justify-center items-center min-h-screen px-4 md:px-6 lg:px-8 py-8">
+          {isSuccess && (
+            <div>
+              <div className="bg-emerald-400 rounded-md text-sm text-white px-4 py-2 mx-auto my-4">
+                <h1>Registrasi Berhasil</h1>
+              </div>
+              <p>anda akan diredirect untuk login</p>
+            </div>
+          )}
+
           <div className="flex gap-2 items-center">
             <div className="aspect-square">
               <Image
@@ -64,9 +79,9 @@ const RegisterPage = () => {
               initialValues={{
                 email: "",
                 password: "",
-                firstName: "",
-                lastName: "",
-                passwordConfirmation: "",
+                first_name: "",
+                last_name: "",
+                password_confirmation: "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values, { setSubmitting, setErrors }) => {
@@ -83,15 +98,15 @@ const RegisterPage = () => {
                     icon={<BiAt />}
                   />
                   <TextInput
-                    id="firstName"
-                    name="firstName"
+                    id="first_name"
+                    name="first_name"
                     type="text"
                     placeholder="nama depan"
                     icon={<BiUser />}
                   />
                   <TextInput
-                    id="lastName"
-                    name="lastName"
+                    id="last_name"
+                    name="last_name"
                     type="text"
                     placeholder="nama belakang"
                     icon={<BiUser />}
@@ -103,8 +118,8 @@ const RegisterPage = () => {
                     icon={<BiLock />}
                   />
                   <PasswordInput
-                    id="passwordConfirmation"
-                    name="passwordConfirmation"
+                    id="password_confirmation"
+                    name="password_confirmation"
                     placeholder="konfirmasi password"
                     icon={<BiLock />}
                   />

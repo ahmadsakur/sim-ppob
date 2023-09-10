@@ -14,7 +14,7 @@ export const AuthService = {
     return apiClient.post("/login", credentials);
   },
   register: (credentials: registerCredentialsType) => {
-    return apiClient.post("/register", credentials);
+    return apiClient.post("/registration", credentials);
   },
   getProfile: ({ token }: { token: string }) => {
     return apiClient.get("/profile", {
