@@ -7,11 +7,19 @@ import { BiAt, BiLock, BiUser } from "react-icons/bi";
 import * as Yup from "yup";
 import TextInput from "@/components/input/TextInput";
 import { AuthService } from "@/services/api-service";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/auth/authSlice";
+import { useRouter } from "next/router";
+import AuthModal from "@/components/AuthModal";
 
 const AccountPage = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
   const [file, setFile] = React.useState<File | null>(null);
+
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -75,8 +83,17 @@ const AccountPage = () => {
     console.log(values);
   };
 
+  const handleLogout = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <DashboardLayout>
+      {
+        isModalOpen && (
+          <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        )
+      }
       <div className="w-full md:w-1/2 py-8 mx-auto">
         <div className="flex flex-col items-center">
           <div className="py-4 mx-auto flex flex-col items-center justify-center gap-4">
@@ -174,7 +191,10 @@ const AccountPage = () => {
               )}
             </Formik>
           </div>
-          <div className="w-full bg-[#ff4d00] text-white text-sm font-bold rounded-sm text-center mt-4 py-2">
+          <div
+            className="w-full bg-[#ff4d00] text-white text-sm font-bold rounded-sm text-center mt-4 py-2 cursor-pointer"
+            onClick={handleLogout}
+          >
             Logout
           </div>
         </div>

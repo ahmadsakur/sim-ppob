@@ -46,8 +46,6 @@ const Dashboard = ({ services, banners, profile, balance }: DashboardProps) => {
 
   return (
     <DashboardLayout>
-      <h1>{token}</h1>
-      <h1>{isAuthenticated ? 'logged in' : 'fuck off'}</h1>
       {/* <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
         <div className="flex flex-col items-start w-full md:w-1/2">
           <div className="aspect-square">
@@ -106,6 +104,8 @@ const Dashboard = ({ services, banners, profile, balance }: DashboardProps) => {
 };
 
 export default Dashboard;
+
+
 
 // export async function getServerSideProps() {
 

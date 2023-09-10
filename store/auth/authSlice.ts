@@ -32,8 +32,11 @@ const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      state.token = null;
+      sessionStorage.removeItem("token");
     },
     setToken: (state, action: PayloadAction<string>) => {
+      sessionStorage.setItem("token", action.payload);
       state.token = action.payload;
       state.isAuthenticated = true;
     },
