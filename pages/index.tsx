@@ -47,14 +47,14 @@ const Dashboard = () => {
       }
     };
 
-
-
-    getProfile();
-    getBalanceCall();
-    getServicesCall();
-    getBannerCall();
-
-    
+    if (token) {
+      getProfile();
+      getBalanceCall();
+      getServicesCall();
+      getBannerCall();
+    } else {
+      window.location.href = "/login";
+    }
   }, []);
 
   return (
@@ -63,23 +63,27 @@ const Dashboard = () => {
         <Profile profileData={profileData} />
         <BalanceBanner balanceData={balanceData} />
       </div>
-      <div className="py-4 grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 w-full items-start justify-start gap-4">
-        {servicesData.map((service, index) => (
-          <FeatureIcon key={index} data={service} />
-        ))}
-      </div>
-      <div>
-        <p className="text-black font-bold text-sm mt-8">
-          Temukan Promo Menarik
-        </p>
-        <div className="flex overflow-x-scroll hide-scroll-bar container-snap snap-x mt-4">
-          <div className="flex w-full flex-nowrap gap-x-3">
-            {bannersData.map((item, index) => (
-              <Banner key={index} data={item} />
-            ))}
+      {servicesData.length > 0 && (
+        <div className="py-4 grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 w-full items-start justify-start gap-4">
+          {servicesData.map((service, index) => (
+            <FeatureIcon key={index} data={service} />
+          ))}
+        </div>
+      )}
+      {bannersData.length > 0 && (
+        <div>
+          <p className="text-black font-bold text-sm mt-8">
+            Temukan Promo Menarik
+          </p>
+          <div className="flex overflow-x-scroll hide-scroll-bar container-snap snap-x mt-4">
+            <div className="flex w-full flex-nowrap gap-x-3">
+              {bannersData.map((item, index) => (
+                <Banner key={index} data={item} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </DashboardLayout>
   );
 };
