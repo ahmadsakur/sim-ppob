@@ -1,6 +1,5 @@
-// auth/selectors.ts
 import { createSelector } from '@reduxjs/toolkit';
-import { AuthState } from './authSlice'; // Import the AuthState type
+import { AuthState } from './authSlice';
 
 const selectAuthState = (state: { auth: AuthState }) => state.auth;
 
