@@ -8,7 +8,7 @@ import { BiAlarm, BiCoin } from "react-icons/bi";
 const TopupPage = () => {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<any>(null);
   const [isError, setIsError] = useState({
     status: false,
     message: "",
@@ -29,7 +29,6 @@ const TopupPage = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
- 
 
   const validateInput = (amount: number) => {
     if (!amount) {
@@ -37,30 +36,35 @@ const TopupPage = () => {
         status: true,
         message: "Nominal topup tidak boleh kosong",
       });
+      return false;
     } else if (amount < 10000) {
       setIsError({
         status: true,
         message: "Minimal topup adalah Rp. 10.000",
       });
+      return false;
     } else if (amount > 1000000) {
       setIsError({
         status: true,
         message: "Maksimal topup adalah Rp. 1.000.000",
       });
+      return false;
     } else {
       setIsError({
         status: false,
         message: "",
       });
+      return true;
     }
   };
 
   const handleTopUp = () => {
-    validateInput(amount);
-    if (isError.status === false) {
+    const isValidated = validateInput(amount);
+    if (isValidated) {
       setIsModalVisible(true);
+    } else {
+      inputRef.current?.focus();
     }
-
   };
 
   return (
@@ -138,8 +142,9 @@ const TopupPage = () => {
 
           <button
             type="submit"
-            className="bg-[#ff4d00] text-white rounded-sm py-2 w-full"
+            className="bg-[#ff4d00] text-white rounded-sm py-2 w-full disabled:bg-gray-400"
             onClick={handleTopUp}
+            disabled={amount < 1}
           >
             Topup
           </button>
@@ -161,8 +166,13 @@ const TopupPage = () => {
           ))}
         </div>
       </div>
-      {isModalVisible && <TopupModal isOpen={isModalVisible} onClose={handleCloseModal} amount={amount} />}
-      
+      {isModalVisible && (
+        <TopupModal
+          isOpen={isModalVisible}
+          onClose={handleCloseModal}
+          amount={amount}
+        />
+      )}
     </DashboardLayout>
   );
 };
