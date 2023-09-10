@@ -43,7 +43,6 @@ const Dashboard = () => {
     const getBannerCall = async () => {
       const res = await dispatch(getBanners(token));
       if (res.payload) {
-        console.log(res.payload);
         setBannersData(res.payload);
       }
     };

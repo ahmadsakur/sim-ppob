@@ -47,13 +47,11 @@ const AccountPage = () => {
     try {
       setSubmitting(true);
       const response = await AuthService.updateProfile(values);
-      console.log(response);
     } catch (error: any) {
       if (error.response) {
         const errorMessage = error.response.data.message;
         setErrors({ passwordConfirmation: errorMessage });
       } else {
-        console.error(error);
       }
     } finally {
       setSubmitting(false);

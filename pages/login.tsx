@@ -28,7 +28,6 @@ const LoginPage = () => {
     setSubmitting(true);
     try {
       const response = await AuthService.login(values);
-      console.log(response, "response");
       const { token } = response.data.data;
       dispatch(setToken(token));
       router.push("/");
