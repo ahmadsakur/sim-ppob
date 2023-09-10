@@ -1,8 +1,46 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import * as Yup from "yup";
+import { Formik, Form } from "formik";
+import { BiAt, BiLock, BiUser } from "react-icons/bi";
+import TextInput from "@/components/input/TextInput";
+import PasswordInput from "@/components/input/PasswordInput";
+import { AuthService } from "@/services/api-service";
 
 const RegisterPage = () => {
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    firstName: Yup.string().required("Name is required"),
+    lastName: Yup.string().required("Name is required"),
+    password: Yup.string().required("Password is required").min(8),
+    passwordConfirmation: Yup.string()
+      .oneOf([Yup.ref("password")], "Passwords must match")
+      .required("Password confirmation is required"),
+  });
+
+  const handleRegister = async (
+    values: any,
+    { setErrors, setSubmitting }: any
+  ) => {
+    try {
+      setSubmitting(true);
+      const response = await AuthService.register(values);
+      console.log(response);
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage = error.response.data.message;
+        setErrors({ passwordConfirmation: errorMessage });
+      } else {
+        console.error(error);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto min-h-screen h-full bg-white text-black">
       <div className="flex items-center h-full w-full">
@@ -18,65 +56,72 @@ const RegisterPage = () => {
             </div>
             <h1 className="text-2xl font-bold">SIMS PPOB</h1>
           </div>
-          <div className="max-w-xl md:max-w-sm text-3xl font-medium text-gray-800 text-center py-8">
+          <div className="max-w-xl md:max-w-xs text-2xl font-bold text-gray-800 text-center py-8">
             Lengkapi data untuk membuat akun
           </div>
           <div className="w-full lg:w-2/3 mx-auto">
-            <form className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="email"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  name="first-name"
-                  id="first-name"
-                  placeholder="nama depan"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  name="last-name"
-                  id="last-name"
-                  placeholder="nama belakang"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="buat password"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="password"
-                  name="password-confirmation"
-                  id="password-confirmation"
-                  placeholder="konfirmasi password"
-                  className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                />
-              </div>
-              <div className="flex flex-col gap-2 pt-8">
-                <button
-                  type="submit"
-                  className="bg-[#ff4d00] text-white rounded-md py-2"
-                >
-                  Registrasi
-                </button>
-              </div>
-            </form>
+            <Formik
+              initialValues={{
+                email: "",
+                password: "",
+                firstName: "",
+                lastName: "",
+                passwordConfirmation: "",
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values, { setSubmitting, setErrors }) => {
+                handleRegister(values, { setSubmitting, setErrors });
+              }}
+            >
+              {({ isSubmitting }) => (
+                <Form className="flex flex-col gap-8">
+                  <TextInput
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="masukkan email anda"
+                    icon={<BiAt />}
+                  />
+                  <TextInput
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    placeholder="nama depan"
+                    icon={<BiUser />}
+                  />
+                  <TextInput
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    placeholder="nama belakang"
+                    icon={<BiUser />}
+                  />
+                  <PasswordInput
+                    id="password"
+                    name="password"
+                    placeholder="buat password"
+                    icon={<BiLock />}
+                  />
+                  <PasswordInput
+                    id="passwordConfirmation"
+                    name="passwordConfirmation"
+                    placeholder="konfirmasi password"
+                    icon={<BiLock />}
+                  />
+                  <div className="flex flex-col gap-2 mt-4">
+                    <button
+                      type="submit"
+                      className={`bg-[#ff4d00] text-white rounded-sm py-3 text-sm font-medium ${
+                        isSubmitting ? "cursor-wait opacity-50" : ""
+                      }`}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Loading..." : "Registrasi"}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
             <p className="text-gray-500 text-sm py-4 text-center mx-auto">
               sudah punya akun ? login{" "}
               <Link href={"/login"} className="text-[#ff4d00] font-medium">

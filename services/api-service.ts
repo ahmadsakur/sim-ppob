@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   loginCredentialsType,
   registerCredentialsType,
+  updateProfileType,
 } from "@/types/api/auth";
 
 const apiClient = axios.create({
@@ -17,6 +18,19 @@ export const AuthService = {
   },
   getProfile: ({ token }: { token: string }) => {
     return apiClient.get("/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  updateProfile: ({
+    data,
+    token,
+  }: {
+    data: updateProfileType;
+    token: string;
+  }) => {
+    return apiClient.put("/profile/update", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -44,6 +58,13 @@ export const ContentService = {
 export const TransactionService = {
   getBalance: ({ token }: { token: string }) => {
     return apiClient.get("/balance", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  createTransaction: ({ code, token }: { code: string; token: string }) => {
+    return apiClient.post("/transaction", code, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
