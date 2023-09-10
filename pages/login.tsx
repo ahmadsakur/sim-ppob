@@ -7,8 +7,13 @@ import { Formik, Form } from "formik";
 import { BiAt, BiLock } from "react-icons/bi";
 import TextInput from "@/components/input/TextInput";
 import PasswordInput from "@/components/input/PasswordInput";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { setToken } from "@/store/auth/authSlice";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -20,17 +25,15 @@ const LoginPage = () => {
     values: { email: string; password: string },
     { setErrors, setSubmitting }: any
   ) => {
+    setSubmitting(true);
     try {
-      setSubmitting(true);
       const response = await AuthService.login(values);
-      console.log(response);
+      console.log(response, "response");
+      const { token } = response.data.data;
+      dispatch(setToken(token));
+      router.push("/");
     } catch (error: any) {
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-        setErrors({ password: errorMessage });
-      } else {
-        console.error(error);
-      }
+      setErrors({ email: error.response.data.message });
     } finally {
       setSubmitting(false);
     }

@@ -3,6 +3,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import Image from "next/image";
 import FeatureIcon from "@/components/Service";
 import Banner from "@/components/Banner";
+import { useEffect } from "react";
 import {
   AuthService,
   ContentService,
@@ -16,6 +17,8 @@ import {
 } from "@/types/api/content";
 import { useState } from "react";
 import { formatCurrency } from "@/utils/string";
+import { useDispatch, useSelector } from "react-redux";
+import useAuth from "@/hooks/useAuth";
 
 type DashboardProps = {
   services: ServicesType;
@@ -25,15 +28,27 @@ type DashboardProps = {
 };
 
 const Dashboard = ({ services, banners, profile, balance }: DashboardProps) => {
-  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
-  const servicesData = services.data;
-  const bannersData = banners.data;
-  const profileData = profile.data;
-  const { balance: balanceData } = balance.data;
+  // const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
+  // const servicesData = services.data;
+  // const bannersData = banners.data;
+  // const profileData = profile.data;
+  // const { balance: balanceData } = balance.data;
+
+  const { token, isAuthenticated } = useAuth();
+  useEffect(() => {
+    const fetchData = async ({ token }: { token: string }) => {
+      const { data: services } = await ContentService.getServices({ token });
+      const { data: banners } = await ContentService.getBanners({ token });
+      const { data: profile } = await AuthService.getProfile({ token });
+      const { data: balance } = await TransactionService.getBalance({ token });
+    };
+  }, []);
 
   return (
     <DashboardLayout>
-      <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
+      <h1>{token}</h1>
+      <h1>{isAuthenticated ? 'logged in' : 'fuck off'}</h1>
+      {/* <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
         <div className="flex flex-col items-start w-full md:w-1/2">
           <div className="aspect-square">
             <Image
@@ -85,39 +100,40 @@ const Dashboard = ({ services, banners, profile, balance }: DashboardProps) => {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
     </DashboardLayout>
   );
 };
 
 export default Dashboard;
 
-export async function getServerSideProps() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vaXJjb2RlQGdtYWlsLmNvbSIsIm1lbWJlckNvZGUiOiJMTUFXR0M2NiIsImlhdCI6MTY5NDI1NTI0MiwiZXhwIjoxNjk0Mjk4NDQyfQ.RpMEKMuQl_wtf-t6HxX-nTAHrCiHrYCnrZvxP6BGHqw";
+// export async function getServerSideProps() {
 
-  try {
-    const { data: services } = await ContentService.getServices({ token });
-    const { data: banners } = await ContentService.getBanners({ token });
-    const { data: profile } = await AuthService.getProfile({ token });
-    const { data: balance } = await TransactionService.getBalance({ token });
+//   // const {token, isAuthenticated} = useAuth();
+//   const dispatch = useDispatch();
 
-    return {
-      props: {
-        services,
-        banners,
-        profile,
-        balance,
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        services: null,
-        banners: null,
-        profile: null,
-      },
-    };
-  }
-}
+//   try {
+//     const { data: services } = await ContentService.getServices({ token });
+//     const { data: banners } = await ContentService.getBanners({ token });
+//     const { data: profile } = await AuthService.getProfile({ token });
+//     const { data: balance } = await TransactionService.getBalance({ token });
+
+//     return {
+//       props: {
+//         services,
+//         banners,
+//         profile,
+//         balance,
+//       },
+//     };
+//   } catch (error) {
+//     console.error(error);
+//     return {
+//       props: {
+//         services: null,
+//         banners: null,
+//         profile: null,
+//       },
+//     };
+//   }
+// }
