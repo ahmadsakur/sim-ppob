@@ -4,64 +4,80 @@ import React from "react";
 import { formatCurrency } from "@/utils/string";
 import TransactionCard from "@/components/TransactionCard";
 import { TransactionType } from "@/types/api/transaction";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { fetchUser } from "@/store/auth/authThunks";
+import {
+  getBalance,
+  getTransaction,
+} from "@/store/transaction/transactionThunks";
+import { User } from "@/store/auth/authSlice";
+import Profile from "@/components/Profile";
+import BalanceBanner from "@/components/BalanceBanner";
+import { selectTransactions } from "@/store/transaction/selectors";
 
 const TransactionPage = () => {
-  const [isBalanceVisible, setIsBalanceVisible] =
-    React.useState<boolean>(false);
-  const balanceData = 1000000;
+  const [profileData, setProfileData] = useState<User>();
+  const [offset, setOffset] = useState(0);
+  const [balanceData, setBalanceData] = useState(0);
+  const dispatch = useDispatch();
 
-  const sampleTransaction : TransactionType = {
-    invoice_number: "1694196045044",
-    transaction_type: "TOPUP",
-    description: "Pulsa",
-    total_amount: 40000,
-    created_on: "2023-09-08T18:00:45.044Z",
+  const TransactionsData = useSelector(selectTransactions);
+  // console.log(TransactionsData);
+
+  const AddTransactionData = async () => {
+    const token = sessionStorage.getItem("token");
+    const res = await dispatch(getTransaction({ token, offset }));
+    console.log(res);
+    if (res.payload) {
+      setOffset((prev) => prev + 5);
+    }
   };
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    const getProfile = async () => {
+      const res = await dispatch(fetchUser(token));
+      if (res.payload) {
+        setProfileData(res.payload);
+      }
+    };
+    const getBalanceCall = async () => {
+      const res = await dispatch(getBalance(token));
+      if (res.payload) {
+        setBalanceData(res.payload.balance);
+      }
+    };
+
+    const getTransactionsData = async () => {
+      const res = await dispatch(getTransaction({ token, offset }));
+      if (res.payload) {
+        setOffset((prev) => prev + 5);
+      }
+    };
+
+    getProfile();
+    getBalanceCall();
+    getTransactionsData();
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
-        <div className="flex flex-col items-start w-full md:w-1/2">
-          <div className="aspect-square">
-            <Image
-              src={"/assets/images/profile.png"}
-              width={50}
-              height={50}
-              alt="Profile Picture"
-            />
-          </div>
-          <p className="mt-4 text-lg">Selamat datang,</p>
-          <h2 className="text-2xl font-bold">Ahmad Sakur</h2>
-        </div>
-        <div
-          className="rounded-xl p-4 relative text-white aspect-[4.16/1] bg-cover bg-center bg-no-repeat w-full md:w-[600px] bg-blue-600"
-          style={{
-            backgroundImage: "url('/assets/images/balance-bg.png')",
-          }}
-        >
-          <p>Saldo anda</p>
-          <div className="flex py-4 text-2xl font-bold">
-            <p>Rp.</p>
-            <p className="ml-2">
-              {isBalanceVisible ? formatCurrency(balanceData) : "••••••••"}
-            </p>
-          </div>
-          <p
-            className="text-xs text-gray-200 cursor-pointer"
-            onClick={() => setIsBalanceVisible(!isBalanceVisible)}
-          >
-            {isBalanceVisible ? "Sembunyikan" : "Lihat Saldo"}
-          </p>
-        </div>
+        <Profile profileData={profileData} />
+        <BalanceBanner balanceData={balanceData} />
       </div>
       <div className="py-4">
         <p className="mt-4 text-lg font-bold">Semua Transaksi</p>
         <div className="flex flex-col gap-4 w-full py-4">
-          <TransactionCard data={sampleTransaction} />
-          <TransactionCard data={sampleTransaction} />
-          <TransactionCard data={sampleTransaction} />
-          <TransactionCard data={sampleTransaction} />
+          {TransactionsData.map((transaction, index) => (
+            <TransactionCard key={index} data={transaction} />
+          ))}
         </div>
-        <p className="text-center text-[#ff4d00] font-bold cursor-pointer">
+        <p
+          className="text-center text-[#ff4d00] font-bold cursor-pointer"
+          onClick={AddTransactionData}
+        >
           Show More
         </p>
       </div>

@@ -14,7 +14,7 @@ export const AuthService = {
     return apiClient.post("/login", credentials);
   },
   register: (credentials: registerCredentialsType) => {
-    return apiClient.post("/register", credentials);
+    return apiClient.post("/registration", credentials);
   },
   getProfile: ({ token }: { token: string }) => {
     return apiClient.get("/profile", {
@@ -23,13 +23,7 @@ export const AuthService = {
       },
     });
   },
-  updateProfile: ({
-    data,
-    token,
-  }: {
-    data: updateProfileType;
-    token: string;
-  }) => {
+  updateProfile: (data:updateProfileType, token:string) => {
     return apiClient.put("/profile/update", data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -63,8 +57,39 @@ export const TransactionService = {
       },
     });
   },
-  createTransaction: ({ code, token }: { code: string; token: string }) => {
-    return apiClient.post("/transaction", code, {
+  createTransaction: (code: string, token: string) => {
+    return apiClient.post(
+      "/transaction",
+      {
+        service_code: code,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  topUpBalance: (amount: number, token: string) => {
+    return apiClient.post(
+      "/topup",
+      {
+        top_up_amount: amount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+
+  getTransaction: ({ token, offset }: { token: string; offset: number }) => {
+    return apiClient.get("/transaction/history", {
+      params: {
+        offset,
+        limit: 5,
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },

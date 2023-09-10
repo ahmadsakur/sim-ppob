@@ -1,73 +1,67 @@
 import React from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Image from "next/image";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { User } from "@/store/auth/authSlice";
+import BalanceBanner from "@/components/BalanceBanner";
+import Profile from "@/components/Profile";
+import { fetchUser } from "@/store/auth/authThunks";
+import { getBalance } from "@/store/transaction/transactionThunks";
+import { getBanners, getServices } from "@/store/content/contentThunks";
 import FeatureIcon from "@/components/Service";
 import Banner from "@/components/Banner";
-import {
-  AuthService,
-  ContentService,
-  TransactionService,
-} from "@/services/api-service";
-import {
-  ServicesType,
-  BannersType,
-  ProfileResponseType,
-  BalanceResponseType,
-} from "@/types/api/content";
-import { useState } from "react";
-import { formatCurrency } from "@/utils/string";
+const Dashboard = () => {
+  const [profileData, setProfileData] = useState<User>();
+  const [balanceData, setBalanceData] = useState(0);
+  const [servicesData, setServicesData] = useState([]);
+  const [bannersData, setBannersData] = useState([]);
+  const dispatch = useDispatch();
 
-type DashboardProps = {
-  services: ServicesType;
-  banners: BannersType;
-  profile: ProfileResponseType;
-  balance: BalanceResponseType;
-};
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    const getProfile = async () => {
+      const res = await dispatch(fetchUser(token));
+      if (res.payload) {
+        setProfileData(res.payload);
+      }
+    };
+    const getBalanceCall = async () => {
+      const res = await dispatch(getBalance(token));
+      if (res.payload) {
+        setBalanceData(res.payload.balance);
+      }
+    };
 
-const Dashboard = ({ services, banners, profile, balance }: DashboardProps) => {
-  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
-  const servicesData = services.data;
-  const bannersData = banners.data;
-  const profileData = profile.data;
-  const { balance: balanceData } = balance.data;
+    const getServicesCall = async () => {
+      const res = await dispatch(getServices(token));
+      if (res.payload) {
+        setServicesData(res.payload);
+      }
+    };
+
+    const getBannerCall = async () => {
+      const res = await dispatch(getBanners(token));
+      if (res.payload) {
+        setBannersData(res.payload);
+      }
+    };
+
+
+
+    getProfile();
+    getBalanceCall();
+    getServicesCall();
+    getBannerCall();
+
+    
+  }, []);
 
   return (
     <DashboardLayout>
       <div className="py-8 flex flex-col md:flex-row justify-between items-start gap-8">
-        <div className="flex flex-col items-start w-full md:w-1/2">
-          <div className="aspect-square">
-            <Image
-              src={profileData?.profile_image || "/assets/images/user.png"}
-              width={50}
-              height={50}
-              alt="Profile Picture"
-            />
-          </div>
-          <p className="mt-4 text-lg">Selamat datang,</p>
-          <h2 className="text-2xl font-bold">{`${
-            profileData?.first_name || ""
-          } ${profileData?.last_name || ""}`}</h2>
-        </div>
-        <div
-          className="rounded-xl p-4 relative text-white aspect-[4.16/1] bg-cover bg-center bg-no-repeat w-full md:w-[600px] bg-blue-600"
-          style={{
-            backgroundImage: "url('/assets/images/balance-bg.png')",
-          }}
-        >
-          <p>Saldo anda</p>
-          <div className="flex py-4 text-2xl font-bold">
-            <p>Rp.</p>
-            <p className="ml-2">
-              {isBalanceVisible ? formatCurrency(balanceData) : "••••••••"}
-            </p>
-          </div>
-          <p
-            className="text-xs text-gray-200 cursor-pointer"
-            onClick={() => setIsBalanceVisible(!isBalanceVisible)}
-          >
-            {isBalanceVisible ? "Sembunyikan" : "Lihat Saldo"}
-          </p>
-        </div>
+        <Profile profileData={profileData} />
+        <BalanceBanner balanceData={balanceData} />
       </div>
       <div className="py-4 grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 w-full items-start justify-start gap-4">
         {servicesData.map((service, index) => (
@@ -91,33 +85,3 @@ const Dashboard = ({ services, banners, profile, balance }: DashboardProps) => {
 };
 
 export default Dashboard;
-
-export async function getServerSideProps() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vaXJjb2RlQGdtYWlsLmNvbSIsIm1lbWJlckNvZGUiOiJMTUFXR0M2NiIsImlhdCI6MTY5NDI1NTI0MiwiZXhwIjoxNjk0Mjk4NDQyfQ.RpMEKMuQl_wtf-t6HxX-nTAHrCiHrYCnrZvxP6BGHqw";
-
-  try {
-    const { data: services } = await ContentService.getServices({ token });
-    const { data: banners } = await ContentService.getBanners({ token });
-    const { data: profile } = await AuthService.getProfile({ token });
-    const { data: balance } = await TransactionService.getBalance({ token });
-
-    return {
-      props: {
-        services,
-        banners,
-        profile,
-        balance,
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        services: null,
-        banners: null,
-        profile: null,
-      },
-    };
-  }
-}

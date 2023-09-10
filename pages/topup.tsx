@@ -8,7 +8,7 @@ import { BiAlarm, BiCoin } from "react-icons/bi";
 const TopupPage = () => {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [amount, setAmount] = useState<any>(null);
+  const [amount, setAmount] = useState<any>(0);
   const [isError, setIsError] = useState({
     status: false,
     message: "",
