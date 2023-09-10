@@ -1,7 +1,7 @@
 ## Summary
 This repository is made as an assignment for NUTech hiring process as a `React JS Developer`.
 Below is the list of the feature i worked on based on [API Requirements](https://api-doc-tht.nutech-integrasi.app/#/).
-You can visit this project [Deployed Website]() or visit my other [Portfolio Website](https://noir-gamma.vercel.app)
+You can visit this project [Deployed Website](https://sim-ppob.vercel.app) or visit my other [Portfolio Website](https://noir-gamma.vercel.app)
 ### Module Membership
 - [x] /login
 - [x] /register
