@@ -14,6 +14,19 @@ export const getBalance: any = createAsyncThunk(
   }
 );
 
+export const topUpBalance: any = createAsyncThunk(
+  "transaction/topUpBalance",
+  async ({ amount, token }: { amount: number; token: string }, { dispatch }) => {
+    try {
+      const response = await TransactionService.topUpBalance(amount, token);
+      const { data } = response.data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 export const createTransaction :any= createAsyncThunk(
   "transaction/createTransaction",
   async ({ code, token }: { code: string; token: string }, { dispatch }) => {

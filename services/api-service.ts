@@ -63,11 +63,24 @@ export const TransactionService = {
       },
     });
   },
-  createTransaction: (code:string, token:string) => {
+  createTransaction: (code: string, token: string) => {
     return apiClient.post(
       "/transaction",
       {
         service_code: code,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  topUpBalance: (amount: number, token: string) => {
+    return apiClient.post(
+      "/topup",
+      {
+        top_up_amount: amount,
       },
       {
         headers: {

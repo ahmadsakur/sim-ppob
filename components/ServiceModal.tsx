@@ -23,9 +23,7 @@ const ServiceModal = ({ isOpen, onClose, data }: ServiceModalProps) => {
   const dispatch = useDispatch();
 
   const handleTopupPayment = async () => {
-    // const token = sessionStorage.getItem("token");
-    let token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vaXJjb2RlQGdtYWlsLmNvbSIsIm1lbWJlckNvZGUiOiJMTUFXR0M2NiIsImlhdCI6MTY5NDM1MzQzOCwiZXhwIjoxNjk0Mzk2NjM4fQ.bDyBRIQDRpUsV-oIuPAuq6w5IZ5WKC_I3xSHSO4RRSo";
+    const token = sessionStorage.getItem("token");
     setIsLoading(true);
     const res = await dispatch(createTransaction({ code: data.service_code, token }));
     if (!res.error) {

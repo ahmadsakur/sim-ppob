@@ -1,9 +1,12 @@
+import { TransactionService } from "@/services/api-service";
+import { topUpBalance } from "@/store/transaction/transactionThunks";
 import { ServiceType } from "@/types/api/content";
 import { formatCurrency } from "@/utils/string";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { BiCheck, BiX } from "react-icons/bi";
+import { useDispatch } from "react-redux";
 
 interface TopupModalProps {
   isOpen: boolean;
@@ -16,15 +19,22 @@ const TopupModal = ({ isOpen, onClose, amount }: TopupModalProps) => {
   const [isError, setIsError] = useState<boolean>(true);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleTopupPayment = async () => {
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vaXJjb2RlQGdtYWlsLmNvbSIsIm1lbWJlckNvZGUiOiJMTUFXR0M2NiIsImlhdCI6MTY5NDI1NTI0MiwiZXhwIjoxNjk0Mjk4NDQyfQ.RpMEKMuQl_wtf-t6HxX-nTAHrCiHrYCnrZvxP6BGHqw";
+    const token = sessionStorage.getItem("token");
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    const res = await dispatch(topUpBalance({ amount, token }));
+    console.log(res);
+    if (!res.error) {
       setStatus("final");
-    }, 2000);
+      setIsError(false);
+    } else {
+      setStatus("final");
+      setIsError(true);
+    }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
